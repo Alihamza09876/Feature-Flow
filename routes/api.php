@@ -3,12 +3,14 @@
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\ProgrammingController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GoogleController;
 
 Route::apiResource('users', UserController::class);
 Route::apiResource('transactions', TransactionController::class);
+Route::apiResource('programming', ProgrammingController::class);
 Route::post('/login', [UserController::class, 'login']);
 Route::apiResource('categories', CategoryController::class);
 Route::resource('plans', PlanController::class);

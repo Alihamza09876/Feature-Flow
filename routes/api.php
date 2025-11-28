@@ -35,9 +35,19 @@ Route::delete('roadmap/steps/{id}', [RoadmapController::class, 'destroyStep']);
 Route::post('roadmap/notes', [RoadmapController::class, 'storeNote']);
 Route::put('roadmap/notes/{id}', [RoadmapController::class, 'updateNote']);
 
-Route::post('/login', [UserController::class, 'login']);
+Route::post('/login', [UserController::class, 'login'])->name('login');
 Route::apiResource('categories', CategoryController::class);
 Route::resource('plans', PlanController::class);
 Route::patch('plans/{plan}/complete', [PlanController::class, 'complete'])->name('plans.complete');
 
 Route::post('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
+
+use App\Http\Controllers\NetworkController;
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/network/users', [NetworkController::class, 'getUsers']);
+    Route::post('/network/request', [NetworkController::class, 'sendRequest']);
+    Route::post('/network/accept', [NetworkController::class, 'acceptRequest']);
+    Route::get('/network/messages/{userId}', [NetworkController::class, 'getMessages']);
+    Route::post('/network/message', [NetworkController::class, 'sendMessage']);
+});

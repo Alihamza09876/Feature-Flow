@@ -13,13 +13,11 @@ use App\Http\Controllers\RoadmapController;
 use Illuminate\Support\Facades\Route;
 
 
-// Public routes
 Route::post('/login', [UserController::class, 'login'])->name('login');
 Route::post('/forgot-password', [App\Http\Controllers\PasswordResetController::class, 'sendResetLinkEmail']);
 Route::post('/reset-password', [App\Http\Controllers\PasswordResetController::class, 'reset']);
 Route::post('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
-// Protected routes - require authentication
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('users', UserController::class);
     Route::apiResource('transactions', TransactionController::class);
@@ -32,7 +30,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('tools/export', [ToolController::class, 'export']);
     Route::apiResource('tools', ToolController::class);
 
-    // Roadmap routes
     Route::get('roadmap/topics', [RoadmapController::class, 'indexTopics']);
     Route::post('roadmap/topics', [RoadmapController::class, 'storeTopic']);
     Route::get('roadmap/topics/{id}', [RoadmapController::class, 'showTopic']);
@@ -48,11 +45,15 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::resource('plans', PlanController::class);
     Route::patch('plans/{plan}/complete', [PlanController::class, 'complete'])->name('plans.complete');
 
-    // Network routes
     Route::get('/network/users', [NetworkController::class, 'getUsers']);
     Route::post('/network/request', [NetworkController::class, 'sendRequest']);
     Route::post('/network/accept', [NetworkController::class, 'acceptRequest']);
     Route::get('/network/messages/{userId}', [NetworkController::class, 'getMessages']);
     Route::post('/network/message', [NetworkController::class, 'sendMessage']);
+
+    Route::get('/user', [UserController::class, 'getProfile']);
+    Route::put('/user/update', [UserController::class, 'updateProfile']);
+    Route::put('/user/change-password', [UserController::class, 'changePassword']);
+    Route::delete('/user/delete', [UserController::class, 'deleteAccount']);
 });
 

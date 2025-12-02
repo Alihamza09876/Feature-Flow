@@ -9,10 +9,16 @@ class Category extends Model
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
         'name',
         'icon',
         'color',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     public function transactions()
     {

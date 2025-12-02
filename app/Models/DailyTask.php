@@ -15,4 +15,9 @@ class DailyTask extends Model
         'end_time',
         'status'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

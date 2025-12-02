@@ -11,7 +11,7 @@ class PlanController extends Controller
     {
         return response()->json([
             'success' => true,
-            'data' => Plan::latest()->get()
+            'data' => Plan::where('user_id', auth()->id())->latest()->get()
         ]);
     }
 
@@ -22,7 +22,10 @@ class PlanController extends Controller
             'type' => 'required',
         ]);
 
-        $plan = Plan::create($request->all());
+        $data = $request->all();
+        $data['user_id'] = auth()->id();
+
+        $plan = Plan::create($data);
 
         return response()->json([
             'success' => true,
@@ -33,6 +36,11 @@ class PlanController extends Controller
 
     public function show(Plan $plan)
     {
+        // Ensure the plan belongs to the authenticated user
+        if ($plan->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized');
+        }
+
         return response()->json([
             'success' => true,
             'data' => $plan
@@ -41,6 +49,11 @@ class PlanController extends Controller
 
     public function update(Request $request, Plan $plan)
     {
+        // Ensure the plan belongs to the authenticated user
+        if ($plan->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized');
+        }
+
         $request->validate([
             'title' => 'required',
             'type' => 'required',
@@ -57,6 +70,11 @@ class PlanController extends Controller
 
     public function destroy(Plan $plan)
     {
+        // Ensure the plan belongs to the authenticated user
+        if ($plan->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized');
+        }
+
         $plan->delete();
 
         return response()->json([
@@ -67,6 +85,11 @@ class PlanController extends Controller
 
     public function complete(Plan $plan)
     {
+        // Ensure the plan belongs to the authenticated user
+        if ($plan->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized');
+        }
+
         $plan->update(['is_completed' => true]);
 
         return response()->json([

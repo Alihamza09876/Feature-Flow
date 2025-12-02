@@ -12,7 +12,7 @@ class InterviewQuestionController extends Controller
      */
     public function index(Request $request)
     {
-        $query = InterviewQuestion::query();
+        $query = InterviewQuestion::where('user_id', auth()->id());
 
         if ($request->has('language')) {
             $query->where('language', $request->language);
@@ -42,7 +42,10 @@ class InterviewQuestionController extends Controller
             'answer' => 'required|string',
         ]);
 
-        $question = InterviewQuestion::create($request->all());
+        $data = $request->all();
+        $data['user_id'] = auth()->id();
+
+        $question = InterviewQuestion::create($data);
 
         return response()->json($question, 201);
     }
@@ -52,7 +55,7 @@ class InterviewQuestionController extends Controller
      */
     public function show($id)
     {
-        $question = InterviewQuestion::findOrFail($id);
+        $question = InterviewQuestion::where('user_id', auth()->id())->findOrFail($id);
         return response()->json($question);
     }
 
@@ -61,7 +64,7 @@ class InterviewQuestionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $question = InterviewQuestion::findOrFail($id);
+        $question = InterviewQuestion::where('user_id', auth()->id())->findOrFail($id);
         $question->update($request->all());
         return response()->json($question);
     }
@@ -71,7 +74,7 @@ class InterviewQuestionController extends Controller
      */
     public function destroy(string $id)
     {
-        $question = InterviewQuestion::findOrFail($id);
+        $question = InterviewQuestion::where('user_id', auth()->id())->findOrFail($id);
         $question->delete();
 
         return response()->json(null, 204);
@@ -80,7 +83,7 @@ class InterviewQuestionController extends Controller
     public function export(Request $request)
     {
         $range = $request->query('range', '1d');
-        $query = InterviewQuestion::query();
+        $query = InterviewQuestion::where('user_id', auth()->id());
 
         switch ($range) {
             case '1d':

@@ -12,42 +12,48 @@ use App\Http\Controllers\ToolController;
 use App\Http\Controllers\RoadmapController;
 use Illuminate\Support\Facades\Route;
 
-Route::apiResource('users', UserController::class);
-Route::apiResource('transactions', TransactionController::class);
-Route::apiResource('programming', ProgrammingController::class);
-Route::get('tasks/export', [DailyTaskController::class, 'export']);
-Route::put('/tasks/{id}/complete', [DailyTaskController::class, 'complete']);
-Route::apiResource('tasks', DailyTaskController::class);
-Route::get('interview-questions/export', [InterviewQuestionController::class, 'export']);
-Route::apiResource('interview-questions', InterviewQuestionController::class);
-Route::get('tools/export', [ToolController::class, 'export']);
-Route::apiResource('tools', ToolController::class);
-
-// Roadmap routes
-Route::get('roadmap/topics', [RoadmapController::class, 'indexTopics']);
-Route::post('roadmap/topics', [RoadmapController::class, 'storeTopic']);
-Route::get('roadmap/topics/{id}', [RoadmapController::class, 'showTopic']);
-Route::put('roadmap/topics/{id}', [RoadmapController::class, 'updateTopic']);
-Route::delete('roadmap/topics/{id}', [RoadmapController::class, 'destroyTopic']);
-Route::post('roadmap/steps', [RoadmapController::class, 'storeStep']);
-Route::put('roadmap/steps/{id}', [RoadmapController::class, 'updateStep']);
-Route::delete('roadmap/steps/{id}', [RoadmapController::class, 'destroyStep']);
-Route::post('roadmap/notes', [RoadmapController::class, 'storeNote']);
-Route::put('roadmap/notes/{id}', [RoadmapController::class, 'updateNote']);
 
 Route::post('/login', [UserController::class, 'login'])->name('login');
-Route::apiResource('categories', CategoryController::class);
-Route::resource('plans', PlanController::class);
-Route::patch('plans/{plan}/complete', [PlanController::class, 'complete'])->name('plans.complete');
-
+Route::post('/forgot-password', [App\Http\Controllers\PasswordResetController::class, 'sendResetLinkEmail']);
+Route::post('/reset-password', [App\Http\Controllers\PasswordResetController::class, 'reset']);
 Route::post('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
-use App\Http\Controllers\NetworkController;
-
 Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('users', UserController::class);
+    Route::apiResource('transactions', TransactionController::class);
+    Route::apiResource('programming', ProgrammingController::class);
+    Route::get('tasks/export', [DailyTaskController::class, 'export']);
+    Route::put('/tasks/{id}/complete', [DailyTaskController::class, 'complete']);
+    Route::apiResource('tasks', DailyTaskController::class);
+    Route::get('interview-questions/export', [InterviewQuestionController::class, 'export']);
+    Route::apiResource('interview-questions', InterviewQuestionController::class);
+    Route::get('tools/export', [ToolController::class, 'export']);
+    Route::apiResource('tools', ToolController::class);
+
+    Route::get('roadmap/topics', [RoadmapController::class, 'indexTopics']);
+    Route::post('roadmap/topics', [RoadmapController::class, 'storeTopic']);
+    Route::get('roadmap/topics/{id}', [RoadmapController::class, 'showTopic']);
+    Route::put('roadmap/topics/{id}', [RoadmapController::class, 'updateTopic']);
+    Route::delete('roadmap/topics/{id}', [RoadmapController::class, 'destroyTopic']);
+    Route::post('roadmap/steps', [RoadmapController::class, 'storeStep']);
+    Route::put('roadmap/steps/{id}', [RoadmapController::class, 'updateStep']);
+    Route::delete('roadmap/steps/{id}', [RoadmapController::class, 'destroyStep']);
+    Route::post('roadmap/notes', [RoadmapController::class, 'storeNote']);
+    Route::put('roadmap/notes/{id}', [RoadmapController::class, 'updateNote']);
+
+    Route::apiResource('categories', CategoryController::class);
+    Route::resource('plans', PlanController::class);
+    Route::patch('plans/{plan}/complete', [PlanController::class, 'complete'])->name('plans.complete');
+
     Route::get('/network/users', [NetworkController::class, 'getUsers']);
     Route::post('/network/request', [NetworkController::class, 'sendRequest']);
     Route::post('/network/accept', [NetworkController::class, 'acceptRequest']);
     Route::get('/network/messages/{userId}', [NetworkController::class, 'getMessages']);
     Route::post('/network/message', [NetworkController::class, 'sendMessage']);
+
+    Route::get('/user', [UserController::class, 'getProfile']);
+    Route::put('/user/update', [UserController::class, 'updateProfile']);
+    Route::put('/user/change-password', [UserController::class, 'changePassword']);
+    Route::delete('/user/delete', [UserController::class, 'deleteAccount']);
 });
+

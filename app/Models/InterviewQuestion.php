@@ -6,5 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class InterviewQuestion extends Model
 {
-    protected $fillable = ['language', 'question', 'answer'];
+    protected $fillable = ['user_id', 'language', 'question', 'answer'];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

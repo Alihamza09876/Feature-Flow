@@ -12,7 +12,7 @@ class DailyTaskController extends Controller
      */
     public function index(Request $request)
     {
-        $query = DailyTask::where('user_id', 1)
+        $query = DailyTask::where('user_id', auth()->id())
             ->orderBy('task_date', 'desc')
             ->orderBy('start_time', 'asc');
 
@@ -37,7 +37,7 @@ class DailyTaskController extends Controller
         ]);
 
         $task = DailyTask::create([
-            'user_id' => 1,
+            'user_id' => auth()->id(),
             'title' => $request->title,
             'description' => $request->description,
             'task_date' => $request->task_date ?? now()->toDateString(),
@@ -53,7 +53,7 @@ class DailyTaskController extends Controller
      */
     public function show($id)
     {
-        $task = DailyTask::where('user_id', 1)->findOrFail($id);
+        $task = DailyTask::where('user_id', auth()->id())->findOrFail($id);
 
         return response()->json($task);
     }
@@ -63,7 +63,7 @@ class DailyTaskController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $task = DailyTask::where('user_id', 1)->findOrFail($id);
+        $task = DailyTask::where('user_id', auth()->id())->findOrFail($id);
 
         $request->validate([
             'title' => 'string|max:255',
@@ -88,7 +88,7 @@ class DailyTaskController extends Controller
      */
     public function destroy($id)
     {
-        $task = DailyTask::where('user_id', 1)->findOrFail($id);
+        $task = DailyTask::where('user_id', auth()->id())->findOrFail($id);
 
         $task->delete();
 
@@ -102,7 +102,7 @@ class DailyTaskController extends Controller
      */
     public function complete($id)
     {
-        $task = DailyTask::where('user_id', 1)->findOrFail($id);
+        $task = DailyTask::where('user_id', auth()->id())->findOrFail($id);
         $task->status = $task->status === 'completed' ? 'pending' : 'completed';
         $task->save();
 
@@ -112,7 +112,7 @@ class DailyTaskController extends Controller
     public function export(Request $request)
     {
         $range = $request->query('range', '1d');
-        $query = DailyTask::where('user_id', 1);
+        $query = DailyTask::where('user_id', auth()->id());
 
         switch ($range) {
             case '1d':

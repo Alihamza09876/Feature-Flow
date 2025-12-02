@@ -10,7 +10,10 @@ class TransactionController extends Controller
 {
     public function index()
     {
-        $transactions = Transaction::with('category')->latest()->get();
+        $transactions = Transaction::with('category')
+            ->where('user_id', auth()->id())
+            ->latest()
+            ->get();
         return response()->json($transactions);
     }
 
@@ -23,6 +26,8 @@ class TransactionController extends Controller
             'note' => 'nullable|string',
         ]);
 
+        $validated['user_id'] = auth()->id();
+
         $transaction = Transaction::create($validated);
 
         return response()->json([
@@ -33,12 +38,21 @@ class TransactionController extends Controller
 
     public function show(Transaction $transaction)
     {
+        // Ensure the transaction belongs to the authenticated user
+        if ($transaction->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized');
+        }
         return response()->json($transaction->load('category'));
     }
 
 
     public function update(Request $request, Transaction $transaction)
     {
+        // Ensure the transaction belongs to the authenticated user
+        if ($transaction->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized');
+        }
+
         $validated = $request->validate([
             'category_id' => 'required|exists:categories,id',
             'amount' => 'required|numeric|min:0',
@@ -55,6 +69,11 @@ class TransactionController extends Controller
 
     public function destroy(Transaction $transaction)
     {
+        // Ensure the transaction belongs to the authenticated user
+        if ($transaction->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized');
+        }
+
         $transaction->delete();
 
         return response()->json([

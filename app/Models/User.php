@@ -28,4 +28,45 @@ use HasApiTokens, HasFactory, Notifiable;
             'password' => 'hashed',
         ];
     }
+
+    // Relationships
+    public function dailyTasks()
+    {
+        return $this->hasMany(DailyTask::class);
+    }
+
+    public function categories()
+    {
+        return $this->hasMany(Category::class);
+    }
+
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
+    }
+
+    public function plans()
+    {
+        return $this->hasMany(Plan::class);
+    }
+
+    public function interviewQuestions()
+    {
+        return $this->hasMany(InterviewQuestion::class);
+    }
+
+    public function tools()
+    {
+        return $this->hasMany(Tool::class);
+    }
+
+    public function roadmapTopics()
+    {
+        return $this->hasMany(RoadmapTopic::class);
+    }
+
+    public function programmings()
+    {
+        return $this->hasMany(Programmings::class);
+    }
 }

@@ -10,6 +10,7 @@ class Tool extends Model
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
         'name',
         'description',
         'url',
@@ -18,5 +19,8 @@ class Tool extends Model
         'status'
     ];
 
-    //
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

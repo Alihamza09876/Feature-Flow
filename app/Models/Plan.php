@@ -9,6 +9,7 @@ class Plan extends Model
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
         'title',
         'description',
         'type',
@@ -20,4 +21,9 @@ class Plan extends Model
         'planned_date' => 'date',
         'is_completed' => 'boolean',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

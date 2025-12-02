@@ -9,5 +9,10 @@ class Programmings extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'content'];
+    protected $fillable = ['user_id', 'title', 'content'];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

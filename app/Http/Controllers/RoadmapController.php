@@ -12,7 +12,10 @@ class RoadmapController extends Controller
     // Topics
     public function indexTopics()
     {
-        $topics = RoadmapTopic::withCount('steps')->with('steps')->get();
+        $topics = RoadmapTopic::where('user_id', auth()->id())
+            ->withCount('steps')
+            ->with('steps')
+            ->get();
         return response()->json($topics);
     }
 
@@ -22,28 +25,34 @@ class RoadmapController extends Controller
             'title' => 'required|string|max:255',
         ]);
 
-        $topic = RoadmapTopic::create($request->all());
+        $data = $request->all();
+        $data['user_id'] = auth()->id();
+
+        $topic = RoadmapTopic::create($data);
         return response()->json($topic, 201);
     }
 
     public function showTopic($id)
     {
-        $topic = RoadmapTopic::with(['steps' => function($q) {
-            $q->orderBy('order');
-        }, 'notes'])->findOrFail($id);
+        $topic = RoadmapTopic::where('user_id', auth()->id())
+            ->with(['steps' => function($q) {
+                $q->orderBy('order');
+            }, 'notes'])
+            ->findOrFail($id);
         return response()->json($topic);
     }
 
     public function updateTopic(Request $request, $id)
     {
-        $topic = RoadmapTopic::findOrFail($id);
+        $topic = RoadmapTopic::where('user_id', auth()->id())->findOrFail($id);
         $topic->update($request->all());
         return response()->json($topic);
     }
 
     public function destroyTopic($id)
     {
-        RoadmapTopic::destroy($id);
+        $topic = RoadmapTopic::where('user_id', auth()->id())->findOrFail($id);
+        $topic->delete();
         return response()->json(null, 204);
     }
 

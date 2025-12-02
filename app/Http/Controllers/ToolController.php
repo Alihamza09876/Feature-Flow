@@ -12,7 +12,7 @@ class ToolController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Tool::query();
+        $query = Tool::where('user_id', auth()->id());
 
         if ($request->has('search')) {
             $search = $request->search;
@@ -43,7 +43,10 @@ class ToolController extends Controller
             'category' => 'nullable|string',
         ]);
 
-        $tool = Tool::create($request->all());
+        $data = $request->all();
+        $data['user_id'] = auth()->id();
+
+        $tool = Tool::create($data);
 
         return response()->json($tool, 201);
     }
@@ -53,7 +56,7 @@ class ToolController extends Controller
      */
     public function show(string $id)
     {
-        $tool = Tool::findOrFail($id);
+        $tool = Tool::where('user_id', auth()->id())->findOrFail($id);
         return response()->json($tool);
     }
 
@@ -62,7 +65,7 @@ class ToolController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $tool = Tool::findOrFail($id);
+        $tool = Tool::where('user_id', auth()->id())->findOrFail($id);
         
         $request->validate([
             'name' => 'required|string|max:255',
@@ -79,7 +82,7 @@ class ToolController extends Controller
      */
     public function destroy(string $id)
     {
-        $tool = Tool::findOrFail($id);
+        $tool = Tool::where('user_id', auth()->id())->findOrFail($id);
         $tool->delete();
 
         return response()->json(null, 204);
@@ -88,7 +91,7 @@ class ToolController extends Controller
     public function export(Request $request)
     {
         $range = $request->query('range', '1d');
-        $query = Tool::query();
+        $query = Tool::where('user_id', auth()->id());
 
         switch ($range) {
             case '1d':

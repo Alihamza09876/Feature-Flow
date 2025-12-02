@@ -9,7 +9,7 @@ class ProgrammingController extends Controller
 {
     public function index(): JsonResponse
     {
-        return response()->json(Programmings::all(), 200);
+        return response()->json(Programmings::where('user_id', auth()->id())->get(), 200);
     }
 
     public function store(Request $request): JsonResponse
@@ -19,6 +19,8 @@ class ProgrammingController extends Controller
             'content' => 'required|string',
         ]);
 
+        $validated['user_id'] = auth()->id();
+
         $programming = Programmings::create($validated);
 
         return response()->json($programming, 201);
@@ -26,7 +28,7 @@ class ProgrammingController extends Controller
 
     public function show($id): JsonResponse
     {
-        $programming = Programmings::find($id);
+        $programming = Programmings::where('user_id', auth()->id())->find($id);
 
         if (! $programming) {
             return response()->json(['message' => 'Programmings not found'], 404);
@@ -37,7 +39,7 @@ class ProgrammingController extends Controller
 
     public function update(Request $request, $id): JsonResponse
     {
-        $programming = Programmings::find($id);
+        $programming = Programmings::where('user_id', auth()->id())->find($id);
 
         if (! $programming) {
             return response()->json(['message' => 'Programmings not found'], 404);
@@ -55,7 +57,7 @@ class ProgrammingController extends Controller
 
     public function destroy($id): JsonResponse
     {
-        $programming = Programmings::find($id);
+        $programming = Programmings::where('user_id', auth()->id())->find($id);
 
         if (! $programming) {
             return response()->json(['message' => 'Programmings not found'], 404);

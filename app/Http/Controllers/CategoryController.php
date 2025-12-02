@@ -8,16 +8,18 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        return response()->json(Category::all());
+        return response()->json(Category::where('user_id', auth()->id())->get());
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name'  => 'required|string|unique:categories,name',
+            'name'  => 'required|string',
             'icon'  => 'nullable|string',
             'color' => 'nullable|string',
         ]);
+
+        $validated['user_id'] = auth()->id();
 
         $category = Category::create($validated);
         return response()->json([
@@ -28,7 +30,7 @@ class CategoryController extends Controller
 
     public function destroy($id)
     {
-        $category = Category::findOrFail($id);
+        $category = Category::where('user_id', auth()->id())->findOrFail($id);
         $category->delete();
 
         return response()->json(['message' => 'Category deleted successfully']);
